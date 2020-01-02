@@ -43,5 +43,3 @@ Interval - How often (in seconds) do we poll VCO for event data. We dont want to
 ../velocloud_events.py" Last Time Logged is: 2020-01-01T22:44:58.507862Z for: VCO--47
 ../velocloud_events.py" Request to VCO is: {'interval': {'start': '2020-01-01T22:44:58.507862Z', 'end': '2020-01-01T23:33:36.454618Z'}} for: VCO--47
 ../velocloud_events.py" 0 records returned from VCO Request for: VCO--47
-
-
