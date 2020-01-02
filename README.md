@@ -18,9 +18,7 @@ Dwayne Sinclair / VMware
 Copy the TA_VeloCloud folder to $SPLUNK_HOME/etc/apps and restart Splunk
 
 # With thanks to:
-Ken Guo
-Andrew Lohman
-Kevin Fletcher
+Ken Guo, Andrew Lohman, Kevin Fletcher
 
 # Logging
 Modular input event logging is to th splunkd.log found at ../Splunk/var/log/splunk/splunkd.log. Search on velocloud to find all events associated with this modular input.
