@@ -30,6 +30,9 @@ Set to 0 to generate and save a new cookie.
 
 Interval - How often (in seconds) do we poll VCO for event data. We dont want to poll too often so 120-600 seconds is ideal.
 
+# Issues
+0120-1 - The API call to VeloCloud Orchestrator incorporates a start and end interval. Start interval does not update if an API call to VeloCloud Orchestrator returns no data. 
+
 # Sample Log
 
 ../velocloud_events.py" Cookie time read: 2020-01-01 22:44:52.337208 VCO--12
