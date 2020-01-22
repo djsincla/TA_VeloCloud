@@ -23,7 +23,12 @@ Ken Guo, Andrew Lohman, Kevin Fletcher
 # Logging
 Modular input event logging is to th splunkd.log found at ../Splunk/var/log/splunk/splunkd.log. Search on velocloud to find all events associated with this modular input.
 
+# Installation
+
+Place TA_VeloCloud folder and contents in .../splunk/etc/apps directory and restart Splunk.
+
 # Endpoint Configuration
+
 Required values are:
 
 Name – The name given to this Modular Input. It is recommended to give it the name of the VeloCloud Orchestrator and Enterprise.
