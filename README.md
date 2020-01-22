@@ -24,16 +24,25 @@ Ken Guo, Andrew Lohman, Kevin Fletcher
 Modular input event logging is to th splunkd.log found at ../Splunk/var/log/splunk/splunkd.log. Search on velocloud to find all events associated with this modular input.
 
 # Endpoint Configuration
-VCO URL - The https:// url of VCO without a trailing "/"
+Required values are:
 
-Username - An enterprise VCO Login without 2FA with log access.
+Name – The name given to this Modular Input. It is recommended to give it the name of the VeloCloud Orchestrator and Enterprise.
 
-Password - A password for the username. 
+VCO URL – The https URL of the VeloCloud Orchestrator
 
-Cookie Refresh Time = 0 to 24 hours. After this time, a new login attempt will be made to VCO and a new cookie will be saved. 
-Set to 0 to generate and save a new cookie.
+Username – The VeloCloud Orchestrator username
 
-Interval - How often (in seconds) do we poll VCO for event data. We dont want to poll too often so 120-600 seconds is ideal.
+Password – Matching password for the VeloCloud Orchestrator username.
+
+Optional values are:
+
+Cookie Refresh Time – Successful authentication to VeloCloud Orchestrator (VCO) using a userid and password returns a session cookie which is used for subsequent API calls. Setting this value between 0 and 24 hours is a maximum interval between VCO reauthenticating for a new session cookie. Setting this value to 0 forces the Modular Input to request a session cookie every time the event log is read. If something was to happen to VCO (DR activity etc), modifying the modular input to set this value to 0 then back to a high value is a simple way to regenerate and save a new session cookie. Default is 8 hours.
+
+More Settings – Exposes additional configuration options. 
+
+Interval – Polling interval in seconds between requests to the VeloCloud Orchestrator for event log data. Default is 300 seconds. Minimum is 120 seconds.
+
+Source type, Host, and Index options are Splunk environment specific. Your Splunk administrator will recommend appropriate setting to use. 
 
 # Issues
 0120-1 - Low - The API call to VeloCloud Orchestrator incorporates a start and end interval. Start interval does not update if an API call to VeloCloud Orchestrator returns no data. A fix will be to update the start interval if no data is returned.
