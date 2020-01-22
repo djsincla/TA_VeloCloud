@@ -14,20 +14,22 @@ We mask and encrypt the VCO password and save to the Splunk Password DB. We encr
 # Author
 Dwayne Sinclair / VMware 
 
-# Setup
-Copy the TA_VeloCloud folder to $SPLUNK_HOME/etc/apps and restart Splunk
-
 # With thanks to:
 Ken Guo, Andrew Lohman, Kevin Fletcher
+
+# Installation / Setup
+Copy the TA_VeloCloud folder to $SPLUNK_HOME/etc/apps and restart Splunk.
+
+# Dependencies
+-	Splunk Enterprise 8.0+
+-	Python 2.7
+-	VeloCloud Orchestrator enterprise username and password credentials
+-	Enterprise user account must be “Superuser”, “Standard Admin”, or “Customer Support” role.
 
 # Logging
 Modular input event logging is to th splunkd.log found at ../Splunk/var/log/splunk/splunkd.log. Search on velocloud to find all events associated with this modular input.
 
-# Installation
-
-Place TA_VeloCloud folder and contents in .../splunk/etc/apps directory and restart Splunk.
-
-# Endpoint Configuration
+# New VeloCloud Orchestrator Endpoint Configuration
 
 Required values are:
 
@@ -35,9 +37,9 @@ Name – The name given to this Modular Input. It is recommended to give it the 
 
 VCO URL – The https URL of the VeloCloud Orchestrator
 
-Username – The VeloCloud Orchestrator username
+Username – The VeloCloud Orchestrator username for a VCO enterprise user.
 
-Password – Matching password for the VeloCloud Orchestrator username.
+Password – Matching password for the VeloCloud Orchestrator enterprise user.
 
 Optional values are:
 
