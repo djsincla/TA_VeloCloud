@@ -26,9 +26,6 @@ Copy the TA_VeloCloud folder to $SPLUNK_HOME/etc/apps and restart Splunk.
 -	VeloCloud Orchestrator enterprise username and password credentials
 -	Enterprise user account must be “Superuser”, “Standard Admin”, or “Customer Support” role.
 
-# Logging
-Modular input event logging is to th splunkd.log found at ../Splunk/var/log/splunk/splunkd.log. Search on velocloud to find all events associated with this modular input.
-
 # New VeloCloud Orchestrator Endpoint Configuration
 
 Required values are:
@@ -54,10 +51,10 @@ Source type, Host, and Index options are Splunk environment specific. Your Splun
 # Issues
 0120-1 - Low - The API call to VeloCloud Orchestrator incorporates a start and end interval. Start interval does not update if an API call to VeloCloud Orchestrator returns no data. A fix will be to update the start interval if no data is returned.
 
+# Logging
+Modular input event logging is to the splunkd.log file found at ../Splunk/var/log/splunk/splunkd.log. Filter on velocloud to find all events associated with this modular input.
+
 # Sample Log
-
-The Splunk log can be found at ../Splunk/var/log/splunk/splunkd.log Filter on velocloud to highlight events associated with the TA-VeloCloud modular input.
-
 ../velocloud_events.py" Cookie time read: 2020-01-01 22:44:52.337208 VCO--12
 
 ../velocloud_events.py" Cookie read from Password DB for: VCO--12 
