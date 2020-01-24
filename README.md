@@ -56,6 +56,8 @@ Source type, Host, and Index options are Splunk environment specific. Your Splun
 
 # Sample Log
 
+The Splunk log can be found at ../Splunk/var/log/splunk/splunkd.log Filter on velocloud to highlight events associated with the TA-VeloCloud modular input.
+
 ../velocloud_events.py" Cookie time read: 2020-01-01 22:44:52.337208 VCO--12
 
 ../velocloud_events.py" Cookie read from Password DB for: VCO--12 
