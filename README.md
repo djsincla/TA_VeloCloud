@@ -25,6 +25,7 @@ Copy the TA_VeloCloud folder to $SPLUNK_HOME/etc/apps and restart Splunk.
 -	Python 2.7
 -	VeloCloud Orchestrator enterprise username and password credentials
 -	Enterprise user account must be “Superuser”, “Standard Admin”, or “Customer Support” role.
+- Tested up to VCO V4.2
 
 # New VeloCloud Orchestrator Endpoint Configuration
 
@@ -54,7 +55,7 @@ Source type, Host, and Index options are Splunk environment specific. Your Splun
 # Logging
 Modular input event logging is to the splunkd.log file found at ../Splunk/var/log/splunk/splunkd.log. Filter on velocloud to find all events associated with this modular input.
 
-# Sample Log
+# Sample Audit Log
 ../velocloud_events.py" Cookie time read: 2020-01-01 22:44:52.337208 VCO--12
 
 ../velocloud_events.py" Cookie read from Password DB for: VCO--12 
