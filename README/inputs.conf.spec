@@ -2,4 +2,3 @@
 rest_url = <value>
 username = <value>
 password = <value>
-crefresh = <value>

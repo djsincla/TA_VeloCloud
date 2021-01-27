@@ -70,19 +70,10 @@ class MyScript(Script):
 		
 		arg = Argument(
 			name="password",
-			title="Password",
+			title="Token",
 			data_type=Argument.data_type_string,
 			required_on_create=True,
 			required_on_edit=True
-		)
-		scheme.add_argument(arg)
-
-		arg = Argument(
-			name="crefresh",
-			title="Cookie Refresh Time (Hours)",
-			data_type=Argument.data_type_number,
-			required_on_create=False,
-			required_on_edit=False
 		)
 		scheme.add_argument(arg)
 
@@ -93,15 +84,10 @@ class MyScript(Script):
 		rest_url 	= definition.parameters["rest_url"]
 		username    = definition.parameters["username"]
 		password    = definition.parameters["password"]
-		crefresh     = int(definition.parameters["crefresh"])
 	
 		try:
 			# Do checks here.  For example, try to connect to whatever you need the credentials for using the credentials provided.
 			# If everything passes, create a credential with the provided input.
-
-			# djs 01/20 Ensure refresh is a positive number.
-			if crefresh < 0 or crefresh > 24:
-				raise ValueError("Cookie refresh interval (in hours) must be >= 0 and <= 24. Found min=%f" % refresh)
 
 			urlSecure , unused = rest_url.split("://")
 			if urlSecure.lower() != "https":
@@ -129,7 +115,7 @@ class MyScript(Script):
 		except Exception as e:
 			raise Exception, "An error occurred updating credentials. Please ensure your user account has admin_all_objects and/or list_storage_passwords capabilities. Details: %s" % str(e)
 
-	def mask_password(self, session_key, rest_url, username, crefresh):
+	def mask_password(self, session_key, rest_url, username):
 		try:
 			args = {'token':session_key}
 			service = client.connect(**args)
@@ -139,8 +125,7 @@ class MyScript(Script):
 			kwargs = {
 				"rest_url": rest_url,
 				"username": username,
-				"password": self.MASK,
-				"crefresh": crefresh
+				"password": self.MASK
 			}
 			item.update(**kwargs).refresh()
 			
@@ -165,14 +150,13 @@ class MyScript(Script):
 		username = self.input_items["username"]
 		password = self.input_items['password']
 		rest_url = self.input_items["rest_url"]
-		crefresh  = int(self.input_items["crefresh"])
 		interval  = int(self.input_items["interval"])
 
 		try:
 			# If the password is not masked, mask it.
 			if password != self.MASK:
 				self.encrypt_password(username, password, session_key)
-				self.mask_password(session_key, rest_url, username, crefresh)
+				self.mask_password(session_key, rest_url, username)
 
 		except Exception as e:
 			ew.log("ERROR", "Error: %s" % str(e))
@@ -181,144 +165,97 @@ class MyScript(Script):
 		# Establish a file state store object based on part of the input name.
 		state_store = FileStateStore(inputs.metadata, self.input_name)
 
-		# djs 01/20
-		# Create a default time for a cookie 80 hours in the past. Read cookie from
-		# state store, but if none present, use the default_time.
-		defaultTime = datetime.utcnow() - timedelta(hours=80)
-		lastCookieTime = state_store.get_state(inputNameS+"_Velo_cookie_time") or str(defaultTime)
-		lastCookieTime_obj = datetime.strptime(lastCookieTime, '%Y-%m-%d %H:%M:%S.%f')   
-		ew.log("INFO", "Cookie time read: " + lastCookieTime + " " + inputNameS)
-
-		# djs 01/20
-		# Read in a clear text version of the cookie from password db.
-		# Userid is VCO input name + Velo_Cookie
-		clearCookie = self.get_password(session_key, inputNameS+"_Velo_cookie")
-		ew.log('INFO', "Cookie read from Password DB for: " + inputNameS + " ")
-		cookie = { 'velocloud.session' : clearCookie }
 
 		# djs 12/19
-		# If last cookie time is beyond cookie refresh interval or 0, we need to 
-		# auth for a new cookie. 
-		if  lastCookieTime_obj < (datetime.utcnow() - timedelta(hours=crefresh) ) or crefresh == 0:
+		# We read last position or 0.
+		# We read last time logged or default to 180 days ago.
+		lastPosition = state_store.get_state(inputNameS+"_Velo_last_pos") or 0
+		ew.log('INFO', "Last Position read is: " + str(lastPosition) + " for: " + inputNameS)
 
-			ew.log('INFO', "Cookie required for: " + inputNameS)
+		lastTimeLogged = state_store.get_state(inputNameS+"_Velo_last_time") or (datetime.utcnow() - timedelta(days=(1))).strftime('%Y-%m-%dT%H:%M:%S.%fZ')
+		lastTime_obj = datetime.strptime(lastTimeLogged, '%Y-%m-%dT%H:%M:%S.%fZ') - timedelta(seconds=interval)
+		lastTime = lastTime_obj.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
+		ew.log('INFO', "Last Time Logged is: " + str(lastTime) + " for: " + inputNameS)
+	
+		# djs 12/19
+		# Format the api call to velocloud vco to obtain event data. 
+		eventStart = lastTime
+		eventEnd = datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%S.%fZ')
+		data = {"interval": {"end": eventEnd, "start": eventStart}}
+		ew.log('INFO', "Request to VCO is: " + str(data) + " for: " + inputNameS)
 
-			# djs 12/19
-			# Obtain a clear text password for call to VCO and login.	
-			clearPassword = self.get_password(session_key, username)
-			data = {'username': username, 'password': clearPassword }
-			veloLoginUrl = rest_url+"/portal/rest/login/enterpriseLogin"
+		veloEventUrl = rest_url+"/portal/rest/event/getEnterpriseEvents"
 
-			# djs 01/20
-			# If successful, we received a response from VCO.
-			respC = requests.post(veloLoginUrl, data=data, verify=False)
-
-			# djs 12/29
-			# Save cookie to password db.
-			veloCookie = respC.cookies['velocloud.session']
-			self.encrypt_password(inputNameS+"_Velo_cookie", veloCookie, session_key)
-			ew.log('INFO', "Cookie Stored in Password DB: " + " for: " + inputNameS)
-
-			# djs 12/29
-			# Save cookie time to state store.
-			currentCookieTime = datetime.utcnow()
-			state_store.update_state(inputNameS+"_Velo_cookie_time", str(currentCookieTime))
-			ew.log('INFO', "Current Cookie Time Stored: " + str(currentCookieTime) + " for: " + inputNameS)
-
-			cookie = { 'velocloud.session' : veloCookie }
-
-		else:
-
-			ew.log('INFO', "No Cookie required for: " + inputNameS)
-
-		if cookie:
-
-			# djs 12/19
-			# We read last position or 0.
-			# We read last time logged or default to 180 days ago.
-			lastPosition = state_store.get_state(inputNameS+"_Velo_last_pos") or 0
-			ew.log('INFO', "Last Position read is: " + str(lastPosition) + " for: " + inputNameS)
-
-			lastTimeLogged = state_store.get_state(inputNameS+"_Velo_last_time") or (datetime.utcnow() - timedelta(days=(1))).strftime('%Y-%m-%dT%H:%M:%S.%fZ')
-			lastTime_obj = datetime.strptime(lastTimeLogged, '%Y-%m-%dT%H:%M:%S.%fZ') - timedelta(seconds=interval)
-			lastTime = lastTime_obj.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
-			ew.log('INFO', "Last Time Logged is: " + str(lastTime) + " for: " + inputNameS)
-		
-			# djs 12/19
-			# Format the api call to velocloud vco to obtain event data. 
-			eventStart = lastTime
-			eventEnd = datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%S.%fZ')
-			data = {"interval": {"end": eventEnd, "start": eventStart}}
-			ew.log('INFO', "Request to VCO is: " + str(data) + " for: " + inputNameS)
-
-			veloEventUrl = rest_url+"/portal/rest/event/getEnterpriseEvents"
-
-			# djs 01/20
-			# If successful, we received a response from VCO.
-			respE = requests.post(veloEventUrl, cookies=cookie, data=json.dumps(data), verify=False)
+		# djs 01/21
+		# Create a header containing the token
+		# Get password
+		password =
+		headers =  "Authorization: Token " + password 
+		respE = requests.post(veloEventUrl, headers=headers data=json.dumps(data), verify=False)
+		headers =
 			
-			# djs 01/20
-			# Debugging only.
-			# ew.log('INFO', "Response from VCO: " + respE.text)
+		# djs 01/20
+		# Debugging only.
+		# ew.log('INFO', "Response from VCO: " + respE.text)
 
-			# djs 12/19
-			# The data response from the velocloud api call is in resp.text
-			outputS =  collections.OrderedDict()
-			output = json.loads(respE.text)
-			respE = ''
+		# djs 12/19
+		# The data response from the velocloud api call is in resp.text
+		outputS =  collections.OrderedDict()
+		output = json.loads(respE.text)
+		respE = ''
 
-			try:
+		try:
+			# djs 12/19 
+			# Each log entry in json response is in data section identified by id.
+			# Using id as key, write to a ordered dictionary so we can sort.
+				
+			for entry in output['data']:
+				thisId = entry['id']
+				outputS[thisId] = entry
+
+			ew.log('INFO', str(len(outputS)) + " records returned from VCO Request for: " + inputNameS )
+				
+			if len(outputS) > 0:
 				# djs 12/19 
-				# Each log entry in json response is in data section identified by id.
-				# Using id as key, write to a ordered dictionary so we can sort.
-				
-				for entry in output['data']:
-					thisId = entry['id']
-					outputS[thisId] = entry
-
-				ew.log('INFO', str(len(outputS)) + " records returned from VCO Request for: " + inputNameS )
-				
-				if len(outputS) > 0:
-					# djs 12/19 
-					# From VeloCloud, records are in the wrong order so we
-					# re-sort the ordered dictionary so oldest events first. 
-					outputSr = collections.OrderedDict(reversed(list(outputS.items())))
+				# From VeloCloud, records are in the wrong order so we
+				# re-sort the ordered dictionary so oldest events first. 
+				outputSr = collections.OrderedDict(reversed(list(outputS.items())))
                     
-					# djs 12/19 
-					# For each event, write to splunk using ew.write_event and event object
-					# Note assumption is key is always getting larger. We dont handle wrapping.
-					highId = 0
-					eventCount = 0
-					for key_str, value in outputSr.items():
-						key = int(key_str)
-						if key > highId:
-							highId = key
-						if key > int(lastPosition):
-							event = Event()
-							event.stanza = inputNameS
-							event.data = json.dumps(value)
-							eventCount += 1
-							ew.write_event(event)
+				# djs 12/19 
+				# For each event, write to splunk using ew.write_event and event object
+				# Note assumption is key is always getting larger. We dont handle wrapping.
+				highId = 0
+				eventCount = 0
+				for key_str, value in outputSr.items():
+					key = int(key_str)
+					if key > highId:
+						highId = key
+					if key > int(lastPosition):
+						event = Event()
+						event.stanza = inputNameS
+						event.data = json.dumps(value)
+						eventCount += 1
+						ew.write_event(event)
 				
-					# djs 12/19
-					# Write the highest event id back to the file state store
-					if highId > 0:
-						try:
-							# djs 01/20
-							# Save the last time and position we wrote to splunk in state store.
-							state_store.update_state(inputNameS+"_Velo_last_pos", str(highId))
-							ew.log('INFO', "Last Position out is: " + str(highId) + " for: " + inputNameS)
+				# djs 12/19
+				# Write the highest event id back to the file state store
+				if highId > 0:
+					try:
+						# djs 01/20
+						# Save the last time and position we wrote to splunk in state store.
+						state_store.update_state(inputNameS+"_Velo_last_pos", str(highId))
+						ew.log('INFO', "Last Position out is: " + str(highId) + " for: " + inputNameS)
 
-							state_store.update_state(inputNameS+"_Velo_last_time", str(eventEnd))
-							ew.log('INFO', "Last Time out is: " + str(eventEnd) + " for: " + inputNameS)
+						state_store.update_state(inputNameS+"_Velo_last_time", str(eventEnd))
+						ew.log('INFO', "Last Time out is: " + str(eventEnd) + " for: " + inputNameS)
 
-						except Exception as e:
-							raise Exception, "Something did not go right: %s" % str(e)
+					except Exception as e:
+						raise Exception, "Something did not go right: %s" % str(e)
 
-					ew.log('INFO', str(eventCount) + " VeloCloud events written to log for: " + inputNameS)
+				ew.log('INFO', str(eventCount) + " VeloCloud events written to log for: " + inputNameS)
 
-			except Exception as e:
-				raise Exception, "Something did not go right. Likely a bad password: %s" % str(e)
+		except Exception as e:
+			raise Exception, "Something did not go right. Likely a bad password: %s" % str(e)
 
 if __name__ == "__main__":
 	exitcode = MyScript().run(sys.argv)
