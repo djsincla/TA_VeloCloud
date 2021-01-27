@@ -31,8 +31,8 @@ Copy the TA_VeloCloud folder to $SPLUNK_HOME/etc/apps and restart Splunk.
 - Tested up to VCO V4.2
 
 # In Progress
-Update to Support API Tokens - In Progress 1/26/2021
-Update to Support Python V3.x  - - Estimated 02/2021
+Update to Support API Tokens - In Progress 1/26/2021. 
+Update to Support Python V3.x  - Estimated 02/2021. 
 
 # New VeloCloud Orchestrator Endpoint Configuration
 
