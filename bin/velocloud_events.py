@@ -35,7 +35,7 @@ urllib3.disable_warnings()
 #
 
 class MyScript(Script):
-	
+
 	# Define some global variables
 	MASK           = "<nothing to see here>"
 	APP            = __file__.split(os.sep)[-3]
@@ -110,7 +110,7 @@ class MyScript(Script):
 			pass
 
 		except Exception as e:
-			raise Exception, "Something did not go right: %s" % str(e)
+			raise Exception("Something did not go right: %s" % str(e))
 
 	def encrypt_password(self, username, password, session_key):
 		args = {'token':session_key}
@@ -127,7 +127,7 @@ class MyScript(Script):
 			service.storage_passwords.create(password, username)
 
 		except Exception as e:
-			raise Exception, "An error occurred updating credentials. Please ensure your user account has admin_all_objects and/or list_storage_passwords capabilities. Details: %s" % str(e)
+			raise Exception("An error occurred updating credentials. Please ensure your user account has admin_all_objects and/or list_storage_passwords capabilities. Details: %s" % str(e))
 
 	def mask_password(self, session_key, rest_url, username, crefresh):
 		try:
@@ -216,6 +216,7 @@ class MyScript(Script):
 			# djs 12/29
 			# Save cookie to password db.
 			veloCookie = respC.cookies['velocloud.session']
+
 			self.encrypt_password(inputNameS+"_Velo_cookie", veloCookie, session_key)
 			ew.log('INFO', "Cookie Stored in Password DB: " + " for: " + inputNameS)
 
@@ -289,7 +290,7 @@ class MyScript(Script):
 					# Note assumption is key is always getting larger. We dont handle wrapping.
 					highId = 0
 					eventCount = 0
-					for key_str, value in outputSr.items():
+					for key_str, value in list(outputSr.items()):
 						key = int(key_str)
 						if key > highId:
 							highId = key
@@ -313,12 +314,12 @@ class MyScript(Script):
 							ew.log('INFO', "Last Time out is: " + str(eventEnd) + " for: " + inputNameS)
 
 						except Exception as e:
-							raise Exception, "Something did not go right: %s" % str(e)
+							raise Exception("Something did not go right: %s" % str(e))
 
 					ew.log('INFO', str(eventCount) + " VeloCloud events written to log for: " + inputNameS)
 
 			except Exception as e:
-				raise Exception, "Something did not go right. Likely a bad password: %s" % str(e)
+				raise Exception("Something did not go right. Likely a bad password: %s" % str(e))
 
 if __name__ == "__main__":
 	exitcode = MyScript().run(sys.argv)
