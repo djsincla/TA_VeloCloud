@@ -12,27 +12,28 @@ We mask and encrypt the VCO password and save to the Splunk Password DB. We encr
 Dwayne Sinclair / VMware 
 
 # Change Log
-No Changes - Tested ok with VCO Version 4.2
+- Tested ok with VCO Version 4.2
+- Updated to Python3
+- Added Support for VCO API Tokens Replacing Passwords
 
 # Version
-1.0.7
+1.0.9
 
 # With thanks to:
 Ken Guo, Andrew Lohman, Kevin Fletcher
 
 # Installation / Setup
-Copy the TA_VeloCloud folder to $SPLUNK_HOME/etc/apps and restart Splunk.
+Copy "TA_VeloCloud" folder to $SPLUNK_HOME/etc/apps and restart Splunk.
 
 # Dependencies
 -	Splunk Enterprise 8.0+
--	Python 2.7
--	VeloCloud Orchestrator enterprise username and password credentials
+-	Python 3.x
+-	VeloCloud Orchestrator enterprise username and API Token.
 -	Enterprise user account must be “Superuser”, “Standard Admin”, or “Customer Support” role.
 - Tested up to VCO V4.2
 
 # In Progress
-Update to Support API Tokens - In Progress 1/26/2021. 
-Update to Support Python V3.x  - Estimated 02/2021. 
+TBD - Automatic Token Refresh
 
 # New VeloCloud Orchestrator Endpoint Configuration
 
@@ -44,11 +45,9 @@ VCO URL – The https URL of the VeloCloud Orchestrator
 
 Username – The VeloCloud Orchestrator username for a VCO enterprise user.
 
-Password – Matching password for the VeloCloud Orchestrator enterprise user.
+API Token – The API Token generated against this username.
 
 Optional values are:
-
-Cookie Refresh Time – Successful authentication to VeloCloud Orchestrator (VCO) using a userid and password returns a session cookie which is used for subsequent API calls. Setting this value between 0 and 24 hours is a maximum interval between VCO reauthenticating for a new session cookie. Setting this value to 0 forces the Modular Input to request a session cookie every time the event log is read. If something was to happen to VCO (DR activity etc), modifying the modular input to set this value to 0 then back to a high value is a simple way to regenerate and save a new session cookie. Default is 8 hours.
 
 More Settings – Exposes additional configuration options. 
 
@@ -57,18 +56,12 @@ Interval – Polling interval in seconds between requests to the VeloCloud Orche
 Source type, Host, and Index options are Splunk environment specific. Your Splunk administrator will recommend appropriate setting to use. 
 
 # Issues
-0120-1 - Low - The API call to VeloCloud Orchestrator incorporates a start and end interval. Start interval does not update if an API call to VeloCloud Orchestrator returns no data. A fix will be to update the start interval if no data is returned.
+03/21 - Currently there is no automatic refresh of the API Token. Add a calendar item as a reminder to refresh the token before it expires.
 
 # Logging
 Modular input event logging is to the splunkd.log file found at ../Splunk/var/log/splunk/splunkd.log. Filter on velocloud to find all events associated with this modular input.
 
 # Sample Audit Log
-../velocloud_events.py" Cookie time read: 2020-01-01 22:44:52.337208 VCO--12
-
-../velocloud_events.py" Cookie read from Password DB for: VCO--12 
-
-../velocloud_events.py" No Cookie required for: VCO--12
-
 ../velocloud_events.py" Last Position read is: 1109532 for: VCO--12
 
 ../velocloud_events.py" Last Time Logged is: 2020-01-01T22:45:05.667827Z for: VCO--12
@@ -82,12 +75,6 @@ Modular input event logging is to the splunkd.log file found at ../Splunk/var/lo
 ../velocloud_events.py" Last Time out is: 2020-01-01T23:33:35.169909Z for: VCO--12
 
 ../velocloud_events.py" 1 VeloCloud events written to log for: VCO--12
-
-../velocloud_events.py" Cookie time read: 2020-01-01 22:43:42.559030 VCO--47
-
-../velocloud_events.py" Cookie read from Password DB for: VCO--47 
-
-../velocloud_events.py" No Cookie required for: VCO--47
 
 ../velocloud_events.py" Last Position read is: 71510885 for: VCO--47
 
