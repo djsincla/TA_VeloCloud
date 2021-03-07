@@ -56,7 +56,7 @@ Interval – Polling interval in seconds between requests to the VeloCloud Orche
 Source type, Host, and Index options are Splunk environment specific. Your Splunk administrator will recommend appropriate setting to use. 
 
 # Issues
-03/21 - Currently there is no automatic refresh of the API Token. Add a calendar item as a reminder to refresh the token before it expires.
+03/2021 - Currently there is no automatic refresh of the API Token. Add a calendar item as a reminder to refresh the token before it expires.
 
 # Logging
 Modular input event logging is to the splunkd.log file found at ../Splunk/var/log/splunk/splunkd.log. Filter on velocloud to find all events associated with this modular input.
