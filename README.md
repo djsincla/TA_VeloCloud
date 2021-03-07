@@ -9,17 +9,17 @@ There is some overlap between API calls to VCO (interval x 2) to ensure no recor
 We mask and encrypt the VCO password and save to the Splunk Password DB. We encrypt the VCO session cookie and also save to the Splunk Password DB.
 
 # Branches:
-master - Based on Python 2.7 and requires VCO username and password.
-python3 - Based on Python 3.x and requires VCO username and password.
-token3 - Based on Python 3.x and requires VCO username and VCO API Token
-
+- master - Based on Python 2.7 and requires VCO username and password.
+- python3 - Based on Python 3.x and requires VCO username and password.
+- Token3 - Based on Python 3.x and requires VCO username and VCO API Token
+ 
 Authough I could have merged the python3 and token3 branches together into a single code base, that would have added complexity to the code. A customer request asked to keep the code as simple as possibe. 
 
 # Author
 Dwayne Sinclair / VMware 
 
 # Change Log
-No Changes - Tested ok with VCO Version 4.2
+Tested ok with VCO Version 4.2
 
 # Version
 1.0.7
@@ -36,10 +36,6 @@ Copy the TA_VeloCloud folder to $SPLUNK_HOME/etc/apps and restart Splunk.
 -	VeloCloud Orchestrator enterprise username and password credentials
 -	Enterprise user account must be “Superuser”, “Standard Admin”, or “Customer Support” role.
 - Tested up to VCO V4.2
-
-# In Progress
-Update to Support API Tokens - In Progress 1/26/2021. 
-Update to Support Python V3.x  - Estimated 02/2021. 
 
 # New VeloCloud Orchestrator Endpoint Configuration
 
@@ -62,9 +58,6 @@ More Settings – Exposes additional configuration options.
 Interval – Polling interval in seconds between requests to the VeloCloud Orchestrator for event log data. Default is 300 seconds. Minimum is 120 seconds.
 
 Source type, Host, and Index options are Splunk environment specific. Your Splunk administrator will recommend appropriate setting to use. 
-
-# Issues
-0120-1 - Low - The API call to VeloCloud Orchestrator incorporates a start and end interval. Start interval does not update if an API call to VeloCloud Orchestrator returns no data. A fix will be to update the start interval if no data is returned.
 
 # Logging
 Modular input event logging is to the splunkd.log file found at ../Splunk/var/log/splunk/splunkd.log. Filter on velocloud to find all events associated with this modular input.
