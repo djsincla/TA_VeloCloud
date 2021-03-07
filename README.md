@@ -6,7 +6,7 @@ The API call to VeloCloud Orchestrator (VCO) specifies an interval to minimize t
 
 There is some overlap between API calls to VCO (interval x 2) to ensure no records are missed. We assume the record ID associated with each VCO event record is ascending and we save the last record ID written and only write records to Splunk which are greater than the saved record ID.
 
-We mask and encrypt the VCO password and save to the Splunk Password DB. We encrypt the VCO session cookie and also save to the Splunk Password DB.
+We mask and encrypt the VCO API Token and save to the Splunk Password DB.
 
 # Author
 Dwayne Sinclair / VMware 
