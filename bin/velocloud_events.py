@@ -13,7 +13,7 @@ from state_store import FileStateStore
 import urllib3
 urllib3.disable_warnings()
 
-# Dwayne Sinclair / djs 06/19 - 01/20 / VMware
+# Dwayne Sinclair / djs 06/19 - 03/20
 #
 # VeloCloud REST API to Splunk based on the following examples:
 #  https://www.function1.com/2017/02/encrypting-a-modular-input-field-without-setup-xml
@@ -27,7 +27,7 @@ urllib3.disable_warnings()
 #  https://splunkbase.splunk.com/app/282/
 # Logging:
 #  We use ew.log to log errors. This can be reviewed in ../Splunk/var/log/splunk/splunkd.log
-#  To find log records, filter on: velocloud
+#  To find log records, tail and grep on: velocloud
 # With thanks to input and feedback from:
 #  Ken Guo
 #  Andrew Lohman
@@ -35,7 +35,7 @@ urllib3.disable_warnings()
 #
 
 class MyScript(Script):
-	
+
 	# Define some global variables
 	MASK           = "<nothing to see here>"
 	APP            = __file__.split(os.sep)[-3]
@@ -67,22 +67,13 @@ class MyScript(Script):
 			required_on_edit=True
 		)
 		scheme.add_argument(arg)
-		
+
 		arg = Argument(
-			name="password",
-			title="Password",
+			name="vcoToken",
+			title="VCO API Token",
 			data_type=Argument.data_type_string,
 			required_on_create=True,
 			required_on_edit=True
-		)
-		scheme.add_argument(arg)
-
-		arg = Argument(
-			name="crefresh",
-			title="Cookie Refresh Time (Hours)",
-			data_type=Argument.data_type_number,
-			required_on_create=False,
-			required_on_edit=False
 		)
 		scheme.add_argument(arg)
 
@@ -92,16 +83,11 @@ class MyScript(Script):
 		session_key = definition.metadata["session_key"]
 		rest_url 	= definition.parameters["rest_url"]
 		username    = definition.parameters["username"]
-		password    = definition.parameters["password"]
-		crefresh     = int(definition.parameters["crefresh"])
+		vcoToken	= definition.parameters["vcoToken"]
 	
 		try:
 			# Do checks here.  For example, try to connect to whatever you need the credentials for using the credentials provided.
 			# If everything passes, create a credential with the provided input.
-
-			# djs 01/20 Ensure refresh is a positive number.
-			if crefresh < 0 or crefresh > 24:
-				raise ValueError("Cookie refresh interval (in hours) must be >= 0 and <= 24. Found min=%f" % refresh)
 
 			urlSecure , unused = rest_url.split("://")
 			if urlSecure.lower() != "https":
@@ -110,26 +96,26 @@ class MyScript(Script):
 			pass
 
 		except Exception as e:
-			raise Exception, "Something did not go right: %s" % str(e)
+			raise Exception("Something did not go right: %s" % str(e))
 
-	def encrypt_password(self, username, password, session_key):
+	def encrypt_vcoToken(self, username, vcoToken, session_key):
 		args = {'token':session_key}
 		service = client.connect(**args)
 		
 		try:
-			# If the credential already exists, delte it.
+			# If the credential already exists, delete it.
 			for storage_password in service.storage_passwords:
 				if storage_password.username == username:
 					service.storage_passwords.delete(username=storage_password.username)
 					break
 
 			# Create the credential.
-			service.storage_passwords.create(password, username)
+			service.storage_passwords.create(vcoToken, username)
 
 		except Exception as e:
-			raise Exception, "An error occurred updating credentials. Please ensure your user account has admin_all_objects and/or list_storage_passwords capabilities. Details: %s" % str(e)
+			raise Exception("An error occurred updating credentials. Please ensure your user account has admin_all_objects and/or list_storage_passwords capabilities. Details: %s" % str(e))
 
-	def mask_password(self, session_key, rest_url, username, crefresh):
+	def mask_vcoToken(self, session_key, rest_url, username):
 		try:
 			args = {'token':session_key}
 			service = client.connect(**args)
@@ -139,15 +125,14 @@ class MyScript(Script):
 			kwargs = {
 				"rest_url": rest_url,
 				"username": username,
-				"password": self.MASK,
-				"crefresh": crefresh
+				"vcoToken": self.MASK
 			}
 			item.update(**kwargs).refresh()
 			
 		except Exception as e:
 			raise Exception("Error updating inputs.conf: %s" % str(e))
 
-	def get_password(self, session_key, username):
+	def get_vcoToken(self, session_key, username):
 		args = {'token':session_key}
 		service = client.connect(**args)
 
@@ -163,16 +148,24 @@ class MyScript(Script):
 		unused , inputNameS = self.input_name.split("://")
 
 		username = self.input_items["username"]
-		password = self.input_items['password']
+		vcoToken = self.input_items['vcoToken']
 		rest_url = self.input_items["rest_url"]
-		crefresh  = int(self.input_items["crefresh"])
 		interval  = int(self.input_items["interval"])
 
 		try:
 			# If the password is not masked, mask it.
-			if password != self.MASK:
-				self.encrypt_password(username, password, session_key)
-				self.mask_password(session_key, rest_url, username, crefresh)
+			if vcoToken != self.MASK:
+				self.encrypt_vcoToken(username, vcoToken, session_key)
+				self.mask_vcoToken(session_key, rest_url, username)
+
+		except Exception as e:
+			ew.log("ERROR", "Error: %s" % str(e))
+
+		try:
+			# If the vcoToken is not masked, mask it.
+			if vcoToken != self.MASK:
+				self.encrypt_vcoToken(username, vcoToken, session_key)
+				self.mask_vcoToken(session_key, rest_url, username)
 
 		except Exception as e:
 			ew.log("ERROR", "Error: %s" % str(e))
@@ -181,57 +174,7 @@ class MyScript(Script):
 		# Establish a file state store object based on part of the input name.
 		state_store = FileStateStore(inputs.metadata, self.input_name)
 
-		# djs 01/20
-		# Create a default time for a cookie 80 hours in the past. Read cookie from
-		# state store, but if none present, use the default_time.
-		defaultTime = datetime.utcnow() - timedelta(hours=80)
-		lastCookieTime = state_store.get_state(inputNameS+"_Velo_cookie_time") or str(defaultTime)
-		lastCookieTime_obj = datetime.strptime(lastCookieTime, '%Y-%m-%d %H:%M:%S.%f')   
-		ew.log("INFO", "Cookie time read: " + lastCookieTime + " " + inputNameS)
-
-		# djs 01/20
-		# Read in a clear text version of the cookie from password db.
-		# Userid is VCO input name + Velo_Cookie
-		clearCookie = self.get_password(session_key, inputNameS+"_Velo_cookie")
-		ew.log('INFO', "Cookie read from Password DB for: " + inputNameS + " ")
-		cookie = { 'velocloud.session' : clearCookie }
-
-		# djs 12/19
-		# If last cookie time is beyond cookie refresh interval or 0, we need to 
-		# auth for a new cookie. 
-		if  lastCookieTime_obj < (datetime.utcnow() - timedelta(hours=crefresh) ) or crefresh == 0:
-
-			ew.log('INFO', "Cookie required for: " + inputNameS)
-
-			# djs 12/19
-			# Obtain a clear text password for call to VCO and login.	
-			clearPassword = self.get_password(session_key, username)
-			data = {'username': username, 'password': clearPassword }
-			veloLoginUrl = rest_url+"/portal/rest/login/enterpriseLogin"
-
-			# djs 01/20
-			# If successful, we received a response from VCO.
-			respC = requests.post(veloLoginUrl, data=data, verify=False)
-
-			# djs 12/29
-			# Save cookie to password db.
-			veloCookie = respC.cookies['velocloud.session']
-			self.encrypt_password(inputNameS+"_Velo_cookie", veloCookie, session_key)
-			ew.log('INFO', "Cookie Stored in Password DB: " + " for: " + inputNameS)
-
-			# djs 12/29
-			# Save cookie time to state store.
-			currentCookieTime = datetime.utcnow()
-			state_store.update_state(inputNameS+"_Velo_cookie_time", str(currentCookieTime))
-			ew.log('INFO', "Current Cookie Time Stored: " + str(currentCookieTime) + " for: " + inputNameS)
-
-			cookie = { 'velocloud.session' : veloCookie }
-
-		else:
-
-			ew.log('INFO', "No Cookie required for: " + inputNameS)
-
-		if cookie:
+		if True:
 
 			# djs 12/19
 			# We read last position or 0.
@@ -253,9 +196,16 @@ class MyScript(Script):
 
 			veloEventUrl = rest_url+"/portal/rest/event/getEnterpriseEvents"
 
-			# djs 01/20
-			# If successful, we received a response from VCO.
-			respE = requests.post(veloEventUrl, cookies=cookie, data=json.dumps(data), verify=False)
+			# djs 03/21 Pull the vcoToken and format for header.
+			clearVcoToken = self.get_vcoToken(session_key, username)
+			headers = {'Authorization': 'Token ' + clearVcoToken }
+
+			# djs 03/21 If successful, we received a response from VCO.
+			respE = requests.post(veloEventUrl, data=json.dumps(data), headers=headers, verify=False)
+
+			# djs 03/21 Clear token out of memory
+			headers = ''
+			clearVcoToken = ''
 			
 			# djs 01/20
 			# Debugging only.
@@ -289,7 +239,7 @@ class MyScript(Script):
 					# Note assumption is key is always getting larger. We dont handle wrapping.
 					highId = 0
 					eventCount = 0
-					for key_str, value in outputSr.items():
+					for key_str, value in list(outputSr.items()):
 						key = int(key_str)
 						if key > highId:
 							highId = key
@@ -313,12 +263,12 @@ class MyScript(Script):
 							ew.log('INFO', "Last Time out is: " + str(eventEnd) + " for: " + inputNameS)
 
 						except Exception as e:
-							raise Exception, "Something did not go right: %s" % str(e)
+							raise Exception("Something did not go right: %s" % str(e))
 
 					ew.log('INFO', str(eventCount) + " VeloCloud events written to log for: " + inputNameS)
 
 			except Exception as e:
-				raise Exception, "Something did not go right. Likely a bad password: %s" % str(e)
+				raise Exception("Something did not go right. Likely a bad password: %s" % str(e))
 
 if __name__ == "__main__":
 	exitcode = MyScript().run(sys.argv)
