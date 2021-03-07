@@ -8,6 +8,13 @@ There is some overlap between API calls to VCO (interval x 2) to ensure no recor
 
 We mask and encrypt the VCO password and save to the Splunk Password DB. We encrypt the VCO session cookie and also save to the Splunk Password DB.
 
+# Branches:
+master - Based on Python 2.7 and requires VCO username and password.
+python3 - Based on Python 3.x and requires VCO username and password.
+token3 - Based on Python 3.x and requires VCO username and VCO API Token
+
+Authough I could have merged the python3 and token3 branches together into a single code base, that would have added complexity to the code. A customer request asked to keep the code as simple as possibe. 
+
 # Author
 Dwayne Sinclair / VMware 
 
