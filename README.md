@@ -23,7 +23,7 @@ Dwayne Sinclair / VMware
 Ken Guo, Andrew Lohman, Kevin Fletcher
 
 # Installation / Setup
-Copy "TA_VeloCloud" folder to $SPLUNK_HOME/etc/apps and restart Splunk.
+When you download this folder from github, it may be suffixed by the github branch name. Rename the folder to "TA-VeloCloud" and copy "TA_VeloCloud" folder to $SPLUNK_HOME/etc/apps and restart Splunk.
 Note that the username is used as a key to store state information in Splunk DB. It also helps as a reminder as to what username was used to generate the VCO API Token from. 
 
 # Dependencies
