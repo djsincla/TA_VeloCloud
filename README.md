@@ -28,7 +28,7 @@ Tested ok with VCO Version 4.2
 Ken Guo, Andrew Lohman, Kevin Fletcher
 
 # Installation / Setup
-Copy the TA_VeloCloud folder to $SPLUNK_HOME/etc/apps and restart Splunk.
+When you download this folder from github, it may be suffixed by the github branch name. Rename the folder to "TA-VeloCloud" and copy "TA_VeloCloud" folder to $SPLUNK_HOME/etc/apps and restart Splunk.
 
 # Dependencies
 -	Splunk Enterprise 8.0+
