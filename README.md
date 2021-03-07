@@ -1,6 +1,6 @@
 # TA_VeloCloud
 
-Splunk VeloCloud Event Log - Extract VeloCloud Event Log to Splunk via REST API via Splunk Modular Input. 
+Splunk VeloCloud Event Log - Extract VeloCloud Event Log to Splunk via the VCO REST API and a Splunk Modular Input.
 
 The API call to VeloCloud Orchestrator (VCO) specifies an interval to minimize the performance impact to VCO of frequent API calls. It is recommended an interval of 120-600 seconds to poll VCO.
 
