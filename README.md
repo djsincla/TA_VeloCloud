@@ -30,7 +30,6 @@ When you download this folder from github, it may be suffixed by the github bran
 -	Python 3.x
 -	VeloCloud Orchestrator enterprise username and password credentials
 -	Enterprise user account must be “Superuser”, “Standard Admin”, or “Customer Support” role.
--   Tested up to VCO V4.2
 
 # In Progress
 Update to Support API Tokens - In Progress 1/26/2021. 
