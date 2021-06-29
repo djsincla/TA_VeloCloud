@@ -12,9 +12,10 @@ We mask and encrypt the VCO API Token and save to the Splunk Password DB.
 Dwayne Sinclair / VMware 
 
 # Change Log
-- Tested ok with VCO Version 4.2
 - Updated to Python3
 - Added Support for VCO API Tokens Replacing Passwords
+- Tested ok with VCO Version 4.2.1
+- Tested ok with Splunk Enterprise 8.2.1
 
 # Version
 1.0.9
