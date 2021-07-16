@@ -19,11 +19,12 @@ Although I could have merged the python3 and token3 branches together into a sin
 Dwayne Sinclair / VMware 
 
 # Change Log
-Tested ok with VCO Version 4.2.1
-Tested ok with Splunk Enterprise 8.2.1
+- Tested ok with VCO Version 4.2.1
+- Tested ok with Splunk Enterprise 8.2.1
+- Updated to latest version of splunklib and deleted external python libraries
 
 # Version
-1.0.7
+1.0.10
 
 # With thanks to:
 Ken Guo, Andrew Lohman, Kevin Fletcher
