@@ -18,7 +18,7 @@ Dwayne Sinclair / VMware
 - 7/16/21 Updated to latest version of splunklib and deleted external python libraries from ~/bin
 
 # Version
-1.0.10
+1.1.10
 
 # With thanks to:
 Ken Guo, Andrew Lohman, Kevin Fletcher
