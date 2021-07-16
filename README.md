@@ -16,6 +16,9 @@ Dwayne Sinclair / VMware
 - 7/16/21 Tested ok with VCO Version 4.2.1
 - 7/16/21 Tested ok with Splunk Enterprise 8.2.1
 - 7/16/21 Updated to latest version of splunklib and deleted external python libraries from ~/bin
+- 7/16/21 Updated version numbers... 1.0.x (master) is original Python2 version of code. 
+                                     1.1.x (python3) is Python3 with userid and password.
+                                     1.2.x (Token3) is Python3 with security token.
 
 # Version
 1.1.10
