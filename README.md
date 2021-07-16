@@ -14,9 +14,9 @@ Dwayne Sinclair / VMware
 # Change Log
 - Updated to Python3
 - Added Support for VCO API Tokens Replacing Passwords
-- Tested ok with VCO Version 4.2.1
-- Tested ok with Splunk Enterprise 8.2.1
-- Updated to latest version of splunklib and deleted external python libraries from ~/bin
+- 7/16/21 Tested ok with VCO Version 4.2.1
+- 7/16/21 Tested ok with Splunk Enterprise 8.2.1
+- 7/16/21 Updated to latest version of splunklib and deleted external python libraries from ~/bin
 
 # Version
 1.0.10
