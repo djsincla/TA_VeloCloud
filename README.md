@@ -16,9 +16,10 @@ Dwayne Sinclair / VMware
 - Added Support for VCO API Tokens Replacing Passwords
 - Tested ok with VCO Version 4.2.1
 - Tested ok with Splunk Enterprise 8.2.1
+- Updated to latest version of splunklib and deleted external python libraries
 
 # Version
-1.0.9
+1.0.10
 
 # With thanks to:
 Ken Guo, Andrew Lohman, Kevin Fletcher
