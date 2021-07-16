@@ -15,7 +15,7 @@ Dwayne Sinclair / VMware
 - Updated to Support Python3
 - Tested ok with VCO Version 4.2.1
 - Tested ok with Splunk Enterprise 8.2.1
-- Updated to latest version of splunklib and deleted external python libraries
+- Updated to latest version of splunklib and deleted external python libraries from ~/bin
 
 # Version
 1.0.10
