@@ -16,7 +16,7 @@ We mask and encrypt the VCO password and save to the Splunk Password DB. We encr
 Although I could have merged the python3 and token3 branches together into a single code base, that would have added complexity to the code. A customer request asked to keep the code as simple as possible. 
 
 # Author
-Dwayne Sinclair / VMware 
+Dwayne Sinclair
 
 # Change Log
 - 7/16/21 Tested ok with VCO Version 4.2.1
