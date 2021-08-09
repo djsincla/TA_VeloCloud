@@ -11,6 +11,9 @@ We mask and encrypt the VCO password and save to the Splunk Password DB. We encr
 # Author
 Dwayne Sinclair
 
+# Disclaimer
+This is supported by Dwayne Sinclair and not VMware. 
+
 # Change Log
 - Updated to Support Python3
 - 7/16/21 Tested ok with VCO Version 4.2.1
