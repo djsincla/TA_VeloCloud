@@ -18,6 +18,9 @@ Although I could have merged the python3 and token3 branches together into a sin
 # Author
 Dwayne Sinclair
 
+# Disclaimer
+This is supported by Dwayne Sinclair and not VMware. 
+
 # Change Log
 - 7/16/21 Tested ok with VCO Version 4.2.1
 - 7/16/21 Tested ok with Splunk Enterprise 8.2.1
