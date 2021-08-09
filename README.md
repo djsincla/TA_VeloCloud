@@ -11,6 +11,9 @@ We mask and encrypt the VCO API Token and save to the Splunk Password DB.
 # Author
 Dwayne Sinclair
 
+# Disclaimer
+This is supported by Dwayne Sinclair and not VMware. 
+
 # Change Log
 - Updated to Python3
 - Added Support for VCO API Tokens Replacing Passwords
