@@ -9,7 +9,7 @@ There is some overlap between API calls to VCO (interval x 2) to ensure no recor
 We mask and encrypt the VCO password and save to the Splunk Password DB. We encrypt the VCO session cookie and also save to the Splunk Password DB.
 
 # Author
-Dwayne Sinclair / VMware 
+Dwayne Sinclair
 
 # Change Log
 - Updated to Support Python3
