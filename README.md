@@ -18,8 +18,8 @@ Although I could have merged the python3 and token3 branches together into a sin
 # Author
 Dwayne Sinclair
 
-# Disclaimer
-This is supported by Dwayne Sinclair and not VMware. 
+# Support / Disclaimer
+This is supported by Dwayne Sinclair and not VMware. I make every efffort to keep this code validated against current versions of Splunk and Velocloud. Dont hesitate to reach out to be if you have questions or issues.
 
 # Change Log
 - 7/16/21 Tested ok with VCO Version 4.2.1
