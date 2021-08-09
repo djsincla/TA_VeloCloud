@@ -9,7 +9,7 @@ There is some overlap between API calls to VCO (interval x 2) to ensure no recor
 We mask and encrypt the VCO API Token and save to the Splunk Password DB.
 
 # Author
-Dwayne Sinclair / VMware 
+Dwayne Sinclair
 
 # Change Log
 - Updated to Python3
