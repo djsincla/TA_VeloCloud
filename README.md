@@ -27,6 +27,7 @@ This is supported by Dwayne Sinclair and not VMware. I make every efffort to kee
 - 7/16/21 Updated version numbers... 1.0.x (master) is original Python2 version of code. 
                                      1.1.x (python3) is Python3 with userid and password.
                                      1.2.x (Token3) is Python3 with security token.
+- 8/10/21 Updated to reflect GPL-3.0-or-later license and support by Dwayne.
 
 # Version
 1.2.10
