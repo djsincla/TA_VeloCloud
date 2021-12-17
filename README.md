@@ -27,9 +27,10 @@ This is supported by Dwayne Sinclair and not VMware. I make every efffort to kee
                                      1.1.x (python3) is Python3 with userid and password.
                                      1.2.x (Token3) is Python3 with security token.
 - 8/10/21 Updated to reflect GPL-3.0-or-later license and support by Dwayne.
+- 12/17/21 Updated to the latest version of splunklib, the Splunk Python API
 
 # Version
-1.1.10
+1.1.11
 
 # With thanks to:
 Ken Guo, Andrew Lohman, Kevin Fletcher
