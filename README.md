@@ -21,16 +21,17 @@ This is supported by Dwayne Sinclair and not VMware. I make every efffort to kee
 # Change Log
 - Updated to Python3
 - Added Support for VCO API Tokens Replacing Passwords
-- 7/16/21 Tested ok with VCO Version 4.2.1
-- 7/16/21 Tested ok with Splunk Enterprise 8.2.1
-- 7/16/21 Updated to latest version of splunklib and deleted external python libraries from ~/bin
-- 7/16/21 Updated version numbers... 1.0.x (master) is original Python2 version of code. 
-                                     1.1.x (python3) is Python3 with userid and password.
-                                     1.2.x (Token3) is Python3 with security token.
-- 8/10/21 Updated to reflect GPL-3.0-or-later license and support by Dwayne.
+- 7/16/21  Tested ok with VCO Version 4.2.1
+- 7/16/21  Tested ok with Splunk Enterprise 8.2.1
+- 7/16/21  Updated to latest version of splunklib and deleted external python libraries from ~/bin
+- 7/16/21  Updated version numbers... 1.0.x (master) is original Python2 version of code. 
+                                      1.1.x (python3) is Python3 with userid and password.
+                                      1.2.x (Token3) is Python3 with security token.
+- 8/10/21  Updated to reflect GPL-3.0-or-later license and support by Dwayne.
+- 12/17/21 Updated to the latest version of splunklib the Splink Python API. 
 
 # Version
-1.2.10
+1.2.11
 
 # With thanks to:
 Ken Guo, Andrew Lohman, Kevin Fletcher
