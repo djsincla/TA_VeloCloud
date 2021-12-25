@@ -1,6 +1,6 @@
 # Notice
 
-Due to a number of customer requests, I am working to have this code published on Splunk Base / Splunk Cloud. In the process of prepping for Splunk, I have created a new version of the code which is here:  https://github.com/djsincla/ds_sdwan_events The Splunk version is based on the TA-VeloCloud/Token3 version of the code. Together with some minor fixes and improvents which I will add here as well.
+Due to a number of customer requests, I am working to have this code published on Splunk Base / Splunk Cloud. In the process of prepping for Splunk, I have created a new version of the code which is here:  https://github.com/djsincla/ds_sdwan_events The Splunk version is based on the TA-VeloCloud Token3 Branch of the code. Together with some minor fixes and improvents which I will add here as well.
 
 # TA_VeloCloud
 
